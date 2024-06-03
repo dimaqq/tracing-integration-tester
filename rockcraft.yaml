@@ -1,0 +1,22 @@
+name: gubernator
+version: "2.7.5"
+summary: High-performance, distributed rate-limiting service
+description: |
+  Gubernator is a high-performance, distributed rate-limiting service. It can be used as a standalone service or embedded as a library within your application.
+license: Apache-2.0
+
+platforms:
+  amd64:
+  arm64:
+
+base: bare
+build-base: ubuntu@24.04
+
+parts:
+  gubernator:
+    plugin: go
+    source: github.com/gubernator-io/gubernator
+    source-type: git
+    source-tag: v2.7.5
+    stage-packages:
+      - ca-certificates
