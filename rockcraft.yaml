@@ -13,10 +13,17 @@ base: bare
 build-base: ubuntu@24.04
 
 parts:
+  go-deps:
+    plugin: nil
+    build-packages:
+      - golang-go
+
   gubernator:
     plugin: go
-    source: github.com/gubernator-io/gubernator
+    source: https://github.com/gubernator-io/gubernator.git
     source-type: git
     source-tag: v2.7.5
     stage-packages:
       - ca-certificates
+    after:
+      - go-deps
