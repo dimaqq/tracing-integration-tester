@@ -27,3 +27,18 @@ parts:
       - ca-certificates
     after:
       - go-deps
+
+services:
+  gubernator:
+    override: replace
+    startup: enabled
+    command: /bin/gubernator
+    environment:
+      LOG_LEVEL: info
+
+checks:
+  online:
+    override: replace
+    exec:
+      command: /bin/healthcheck
+    period: 3s
