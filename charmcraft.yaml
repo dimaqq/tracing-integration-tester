@@ -1,3 +1,18 @@
+# ReF: https://discourse.charmhub.io/t/charmcraft-bases-provider-support/4713
+# To build a multi-arch charm on amd64:
+
+bases:
+  - build-on:
+      - name: ubuntu
+        channel: "20.04"
+        architectures: [amd64]
+    run-on:
+      - name: ubuntu
+        channel: "20.04"
+        architectures: [amd64, arm64, riscv64]
+
+# FIXME adapt to 24.04, may need bleeding edge juju
+
 links:
   source: https://github.com/gubernator-io/gubernator
   charm: https://github.com/dimaqq/hexanator
