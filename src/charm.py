@@ -22,7 +22,7 @@ class HexanatorCharm(ops.CharmBase):
         # self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
         # self.framework.observe(self.on.config_changed, self._on_config_changed)
 
-    def _on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
+    def _unused_on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Define and start a workload using the Pebble API.
 
         Change this example to suit your needs. You'll need to specify the right entrypoint and
@@ -40,7 +40,7 @@ class HexanatorCharm(ops.CharmBase):
         # https://juju.is/docs/sdk/constructs#heading--statuses
         self.unit.status = ops.ActiveStatus()
 
-    def _on_config_changed(self, event: ops.ConfigChangedEvent):
+    def _unused_on_config_changed(self, event: ops.ConfigChangedEvent):
         """Handle changed configuration.
 
         Change this example to suit your needs. If you don't need to handle config, you can remove

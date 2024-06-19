@@ -11,14 +11,13 @@ bases:
   - build-on:
       - name: ubuntu
         channel: "22.04"
-        architectures: [amd64]
+        architectures: [amd64, arm64]
     run-on:
       - name: ubuntu
         channel: "22.04"
         architectures: [amd64, arm64, riscv64]
 
-# (Optional) Configuration options for the charm
-# FIXME: push the log evel into pebble config
+# FIXME: unused for now, push the log evel into pebble config
 config:
   options:
     log-level:
@@ -27,22 +26,15 @@ config:
       default: "info"
       type: string
 
-# Your workload’s containers.
 containers:
   gubernator:
     resource: gubernator
 
-
-# This field populates the Resources tab on Charmhub.
 resources:
   gubernator:
-    # FIXME can I use `oci-archive`?
     type: oci-image
     description: Gubernator Rock with Pebble
-    # How to tell `charmcraft` where to take the image from?
-    file: gubernator_2.7.5_arm64.rock
-    upstream-source: gubernator-io/gubernator
+    upstream-source: docker.io/dimaqq/gubernator:2.7.5
 
 links:
   source: https://github.com/gubernator-io/gubernator
-  charm: https://github.com/dimaqq/hexanator
