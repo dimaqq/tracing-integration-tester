@@ -35,6 +35,8 @@ services:
     command: /bin/gubernator
     environment:
       LOG_LEVEL: info
+      # Override this in the charm if the app is intergated with cos-lite
+      OTEL_TRACES_EXPORTER: none
 
 checks:
   online:
