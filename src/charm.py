@@ -18,26 +18,19 @@ class HexanatorCharm(ops.CharmBase):
 
     def __init__(self, *args):
         super().__init__(*args)
+        self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
         # FIXME I feel these are not needed
-        # self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
         # self.framework.observe(self.on.config_changed, self._on_config_changed)
 
-    def _unused_on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
-        """Define and start a workload using the Pebble API.
+    def _on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
+        """Kick off Pebble services.
 
-        Change this example to suit your needs. You'll need to specify the right entrypoint and
-        environment configuration for your specific workload.
-
-        Learn more about interacting with Pebble at at https://juju.is/docs/sdk/pebble.
+        The services are preconfigured in the `rockcraft.yaml` file.
+        However, Juju starts Pebble with `--on-hold`.
+        Here we release Pebble to do it's work.
         """
         # Get a reference the container attribute on the PebbleReadyEvent
-        container = event.workload
-        # Add initial Pebble config layer using the Pebble API
-        container.add_layer("gubernator", self._pebble_layer, combine=True)
-        # Make Pebble reevaluate its plan, ensuring any services are started if enabled.
-        container.replan()
-        # Learn more about statuses in the SDK docs:
-        # https://juju.is/docs/sdk/constructs#heading--statuses
+        event.workload.replan()
         self.unit.status = ops.ActiveStatus()
 
     def _unused_on_config_changed(self, event: ops.ConfigChangedEvent):

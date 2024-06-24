@@ -17,7 +17,7 @@ bases:
         channel: "22.04"
         architectures: [amd64, arm64, riscv64]
 
-# FIXME: unused for now, push the log evel into pebble config
+# FIXME: unused for now, push the log level into pebble config
 config:
   options:
     log-level:

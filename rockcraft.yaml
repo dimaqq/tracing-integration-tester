@@ -6,9 +6,7 @@ description: |
   Gubernator is a high-performance, distributed rate-limiting service.
 license: Apache-2.0
 
-platforms:
-  amd64:
-  arm64:
+platforms: {amd64, arm64}
 
 base: ubuntu@24.04
 
@@ -35,6 +33,8 @@ services:
     command: /bin/gubernator
     environment:
       LOG_LEVEL: info
+      # Prevent gubernator from spinning up as many workers as there are cores on kubernetes cluster vm
+      GUBER_WORKER_COUNT: "1"
       # Override this in the charm if the app is intergated with cos-lite
       OTEL_TRACES_EXPORTER: none
 
