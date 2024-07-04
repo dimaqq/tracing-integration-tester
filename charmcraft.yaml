@@ -34,7 +34,13 @@ resources:
   gubernator:
     type: oci-image
     description: Gubernator Rock with Pebble
+      # FIXME move to 3.0.0 even if still in beta
     upstream-source: docker.io/dimaqq/gubernator:2.7.5
 
 links:
   source: https://github.com/gubernator-io/gubernator
+
+requires:
+  ingress:
+    interface: ingress
+    limit: 1

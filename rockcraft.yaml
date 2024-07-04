@@ -20,6 +20,7 @@ parts:
     plugin: go
     source: https://github.com/gubernator-io/gubernator.git
     source-type: git
+      # FIXME move to 3.0.0 even if in beta
     source-tag: v2.7.5
     stage-packages:
       - ca-certificates
