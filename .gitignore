@@ -1,2 +1,4 @@
 *.charm
 *.rock
+*.swp
+__pycache__

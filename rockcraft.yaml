@@ -32,7 +32,7 @@ services:
     startup: enabled
     command: /bin/gubernator
     environment:
-      LOG_LEVEL: info
+      GUBER_TRACING_LEVEL: DEBUG
       GUBER_HTTP_ADDRESS: 0.0.0.0:80
       GUBER_GRPC_ADDRESS: 0.0.0.0:81
 
