@@ -2,3 +2,4 @@
 *.rock
 *.swp
 __pycache__
+.coverage
