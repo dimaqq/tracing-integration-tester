@@ -3,8 +3,7 @@ name: hexanator
 type: charm
 title: Charmed Gubernator
 summary: High-performance, distributed rate-limiting service
-description: |
-  Gubernator is a high-performance, distributed rate-limiting service.
+description: This is a charm for Gubernator, a high-performance, distributed rate-limiting service.
 
 # charmcraft 3.0
 base: ubuntu@24.04
@@ -18,26 +17,6 @@ parts:
     plugin: charm
     source: .
 
-# FIXME: move to 24.04 when there's a working Juju release
-bases:
-  - build-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [amd64, arm64, riscv64]
-    run-on:
-      - name: ubuntu
-        channel: "22.04"
-        architectures: [amd64, arm64, riscv64]
-
-# FIXME: unused for now, push the log level into pebble config
-config:
-  options:
-    log-level:
-      description: |
-        Acceptable values are: "info", "debug", "warning", "error" and "critical"
-      default: "info"
-      type: string
-
 containers:
   gubernator:
     resource: gubernator
@@ -46,8 +25,7 @@ resources:
   gubernator:
     type: oci-image
     description: Gubernator Rock with Pebble
-      # FIXME move to 3.0.0 even if still in beta
-    upstream-source: docker.io/dimaqq/gubernator:2.7.5
+    upstream-source: docker.io/dimaqq/gubernator:3.0.0
 
 links:
   source: https://github.com/gubernator-io/gubernator
@@ -56,6 +34,8 @@ requires:
   ingress:
     interface: ingress
     limit: 1
+    description: tells the load balancer how to call gubernator
 provides:
   rate-limiting:
     interface: http
+    description: tells the consumer application how to call gubernator
