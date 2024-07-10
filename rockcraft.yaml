@@ -1,6 +1,6 @@
 ---
 name: gubernator
-version: "2.7.5"
+version: "3.0.0b1"
 summary: High-performance, distributed rate-limiting service
 description: |
   Gubernator is a high-performance, distributed rate-limiting service.
@@ -21,7 +21,7 @@ parts:
     source: https://github.com/gubernator-io/gubernator.git
     source-type: git
       # FIXME move to 3.0.0 even if in beta
-    source-tag: v2.7.5
+    source-tag: v3.0
     stage-packages:
       - ca-certificates
     after:
@@ -34,6 +34,8 @@ services:
     command: /bin/gubernator
     environment:
       LOG_LEVEL: info
+      GUBER_HTTP_ADDRESS: 0.0.0.0:80
+      GUBER_GRPC_ADDRESS: 0.0.0.0:81
       # Prevent gubernator from spinning up as many workers as there are cores on kubernetes cluster vm
       GUBER_WORKER_COUNT: "1"
       # Override this in the charm if the app is intergated with cos-lite

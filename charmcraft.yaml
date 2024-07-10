@@ -6,12 +6,24 @@ summary: High-performance, distributed rate-limiting service
 description: |
   Gubernator is a high-performance, distributed rate-limiting service.
 
+# charmcraft 3.0
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+  arm64:
+# Work-around from https://discourse.charmhub.io/t/charmcraft-3-0-in-the-beta-channel/13469/5?u=dimaqq
+parts:
+  charm:
+    plugin: charm
+    source: .
+
 # FIXME: move to 24.04 when there's a working Juju release
 bases:
   - build-on:
       - name: ubuntu
         channel: "22.04"
-        architectures: [amd64, arm64]
+        architectures: [amd64, arm64, riscv64]
     run-on:
       - name: ubuntu
         channel: "22.04"
@@ -44,3 +56,6 @@ requires:
   ingress:
     interface: ingress
     limit: 1
+provides:
+  rate-limiting:
+    interface: http
