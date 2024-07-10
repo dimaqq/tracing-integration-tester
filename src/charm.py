@@ -22,7 +22,7 @@ class HexanatorCharm(ops.CharmBase):
         super().__init__(*args)
         # TODO: presumably the lib figures out app name and model name
         # TODO: check if this is the correct port
-        self.ingress = IngressPerAppRequirer(self, port=80)
+        self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
         self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
 
     def _on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
