@@ -20,8 +20,6 @@ class HexanatorCharm(ops.CharmBase):
 
     def __init__(self, *args):
         super().__init__(*args)
-        # TODO: presumably the lib figures out app name and model name
-        # TODO: check if this is the correct port
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
         self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
 
@@ -29,10 +27,8 @@ class HexanatorCharm(ops.CharmBase):
         """Kick off Pebble services.
 
         The services are preconfigured in the `rockcraft.yaml` file.
-        However, Juju starts Pebble with `--on-hold`.
-        Here we release Pebble to do it's work.
+        Workload Pebble with `--on-hold`, release it.
         """
-        # Get a reference the container attribute on the PebbleReadyEvent
         event.workload.replan()
         self.unit.status = ops.ActiveStatus()
 
