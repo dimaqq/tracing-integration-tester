@@ -1,6 +1,8 @@
+from unittest.mock import ANY
+
 import ops
 import pytest
-import scenario
+from scenario import Context, Container, Relation, State
 
 from charm import HexanatorCharm
 
@@ -19,12 +21,14 @@ META = {
 
 
 def test_startup():
-    ctx = scenario.Context(HexanatorCharm, meta=META)
-    in_ = scenario.State(
-        leader=True,
-        relations=[scenario.Relation(endpoint="ingress", interface="ingress", remote_app_name="ingress")],
-        containers=[scenario.Container(name="gubernator", can_connect=True)],
-    )
-    out = ctx.run(ctx.on.start(), in_)
-    out = ctx.run(ctx.on.pebble_ready(next(iter(in_.containers))), out)
-    assert out.unit_status == ops.ActiveStatus()
+    ctx = Context(HexanatorCharm, meta=META)
+    container = Container(name="gubernator", can_connect=True)
+    relation=Relation(endpoint="ingress", interface="ingress", remote_app_name="ingress")
+    state = State( leader=True, relations=[relation], containers=[container])
+
+    state = ctx.run(ctx.on.start(), state)
+    state = ctx.run(ctx.on.pebble_ready(container), state)
+    state = ctx.run(ctx.on.relation_joined(relation), state)
+
+    assert state.unit_status == ops.ActiveStatus()
+    assert relation.local_app_data == {"model": ANY, "name": '"hexanator"', "port": "80", "strip-prefix": "true"}
