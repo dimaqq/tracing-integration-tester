@@ -1,6 +1,5 @@
 
-"""
-root@hexanator-0:/# curl http://localhost:80/v1/rate-limit.check --header 'Content-Type: application/json'   --data '{
+"""root@hexanator-0:/# curl http://localhost:80/v1/rate-limit.check --header 'Content-Type: application/json'   --data '{
     "requests": [
         {
             "name": "requests_per_sec",

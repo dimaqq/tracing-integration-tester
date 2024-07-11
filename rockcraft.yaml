@@ -1,48 +1,48 @@
 ---
 name: gubernator
-version: "3.0.0"
+version: 3.0.0
 summary: High-performance, distributed rate-limiting service
 description: |
-  Gubernator is a high-performance, distributed rate-limiting service.
+    Gubernator is a high-performance, distributed rate-limiting service.
 license: Apache-2.0
 
-platforms: {amd64, arm64}
+platforms: {amd64: null, arm64: null}
 
 base: ubuntu@24.04
 
 parts:
-  go-deps:
-    plugin: nil
-    build-packages:
-      - golang-go
+    go-deps:
+        plugin: nil
+        build-packages:
+            - golang-go
 
-  gubernator:
-    plugin: go
-    source: https://github.com/gubernator-io/gubernator.git
-    source-type: git
-    source-tag: v3.0
-    stage-packages:
-      - ca-certificates
-    after:
-      - go-deps
+    gubernator:
+        plugin: go
+        source: https://github.com/gubernator-io/gubernator.git
+        source-type: git
+        source-tag: v3.0
+        stage-packages:
+            - ca-certificates
+        after:
+            - go-deps
 
 services:
-  gubernator:
-    override: replace
-    startup: enabled
-    command: /bin/gubernator
-    environment:
-      GUBER_TRACING_LEVEL: DEBUG
-      GUBER_HTTP_ADDRESS: 0.0.0.0:80
-      GUBER_GRPC_ADDRESS: 0.0.0.0:81
-    on-success: shutdown
-    on-failure: shutdown
-    on-check-failure:
-      online: shutdown
+    gubernator:
+        override: replace
+        startup: enabled
+        command: /bin/gubernator
+        environment:
+            GUBER_TRACING_LEVEL: DEBUG
+            GUBER_HTTP_ADDRESS: 0.0.0.0:80
+            GUBER_GRPC_ADDRESS: 0.0.0.0:81
+        on-success: shutdown
+        on-failure: shutdown
+        on-check-failure:
+            online: shutdown
 
 checks:
-  online:
-    override: replace
-    exec:
-      command: /bin/healthcheck
-    period: 3s
+    online:
+        override: replace
+        exec:
+            command: /bin/healthcheck
+        period: 3s

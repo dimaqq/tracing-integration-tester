@@ -2,9 +2,9 @@
 # See LICENSE file for licensing details.
 #
 # Learn more about testing at: https://juju.is/docs/sdk/testing
-import pytest
 import ops
 import ops.testing
+import pytest
 from charm import HexanatorCharm
 
 

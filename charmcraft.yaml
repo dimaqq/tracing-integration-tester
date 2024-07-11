@@ -9,33 +9,33 @@ description: This is a charm for Gubernator, a high-performance, distributed rat
 base: ubuntu@24.04
 build-base: ubuntu@24.04
 platforms:
-  amd64:
-  arm64:
+    amd64:
+    arm64:
 # Work-around from https://discourse.charmhub.io/t/charmcraft-3-0-in-the-beta-channel/13469/5?u=dimaqq
 parts:
-  charm:
-    plugin: charm
-    source: .
+    charm:
+        plugin: charm
+        source: .
 
 containers:
-  gubernator:
-    resource: gubernator
+    gubernator:
+        resource: gubernator
 
 resources:
-  gubernator:
-    type: oci-image
-    description: Gubernator Rock with Pebble
-    upstream-source: docker.io/dimaqq/gubernator:3.0.0
+    gubernator:
+        type: oci-image
+        description: Gubernator Rock with Pebble
+        upstream-source: docker.io/dimaqq/gubernator:3.0.0
 
 links:
-  source: https://github.com/gubernator-io/gubernator
+    source: https://github.com/gubernator-io/gubernator
 
 requires:
-  ingress:
-    interface: ingress
-    limit: 1
-    description: tells the load balancer how to call gubernator
+    ingress:
+        interface: ingress
+        limit: 1
+        description: tells the load balancer how to call gubernator
 provides:
-  rate-limiting:
-    interface: http
-    description: tells the consumer application how to call gubernator
+    rate-limiting:
+        interface: http
+        description: tells the consumer application how to call gubernator

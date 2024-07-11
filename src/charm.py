@@ -4,7 +4,6 @@
 """Charmed Gubernator."""
 
 import ops
-
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
 
