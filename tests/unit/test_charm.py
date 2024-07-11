@@ -3,25 +3,25 @@
 #
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 import pytest
-from ops.testing import Harness
-from ops.model import ActiveStatus, MaintenanceStatus
+import ops
+import ops.testing
 from charm import HexanatorCharm
 
 
 @pytest.fixture
 def harness():
-    harness = Harness(HexanatorCharm)
+    harness = ops.testing.Harness(HexanatorCharm)
     harness.begin()
     yield harness
     harness.cleanup()
 
 
 def test_pebble_ready(harness):
-    assert harness.model.unit.status == MaintenanceStatus('')
+    assert harness.model.unit.status == ops.MaintenanceStatus('')
 
     harness.container_pebble_ready('gubernator')
 
-    assert harness.model.unit.status == ActiveStatus()
+    assert harness.model.unit.status == ops.ActiveStatus()
 
 
 def test_ingress_requirer(harness):
