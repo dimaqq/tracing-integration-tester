@@ -4,19 +4,6 @@ import ops
 from charm import HexanatorCharm
 from scenario import Container, Context, Relation, State
 
-META = {
-    "name": "hexanator",
-    "requires": {
-        "ingress": {
-            "interface": "ingress"
-        }
-    },
-    "containers": {
-        "gubernator": {}
-    },
-
-}
-
 
 def default_pebble_layer() -> dict:
     import yaml
@@ -25,7 +12,7 @@ def default_pebble_layer() -> dict:
 
 
 def test_startup():
-    ctx = Context(HexanatorCharm, meta=META)
+    ctx = Context(HexanatorCharm)
     pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}
     container = Container(name="gubernator", can_connect=True, layers=pebble_layers)
     relation=Relation(endpoint="ingress", interface="ingress", remote_app_name="ingress")
