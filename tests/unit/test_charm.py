@@ -17,9 +17,9 @@ def harness():
 
 
 def test_pebble_ready(harness):
-    assert harness.model.unit.status == ops.MaintenanceStatus('')
+    assert harness.model.unit.status == ops.MaintenanceStatus("")
 
-    harness.container_pebble_ready('gubernator')
+    harness.container_pebble_ready("gubernator")
 
     assert harness.model.unit.status == ops.ActiveStatus()
 

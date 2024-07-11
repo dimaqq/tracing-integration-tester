@@ -13,7 +13,9 @@ class HexanatorCharm(ops.CharmBase):
     def __init__(self, *args):
         super().__init__(*args)
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
-        self.framework.observe(self.on['gubernator'].pebble_ready, self._on_gubernator_pebble_ready)
+        self.framework.observe(
+            self.on["gubernator"].pebble_ready, self._on_gubernator_pebble_ready
+        )
 
     def _on_gubernator_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Kick off Pebble services.
