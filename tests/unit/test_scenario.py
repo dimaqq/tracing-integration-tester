@@ -1,10 +1,8 @@
 from unittest.mock import ANY
 
 import ops
-import pytest
-from scenario import Context, Container, Relation, State
-
 from charm import HexanatorCharm
+from scenario import Container, Context, Relation, State
 
 META = {
     "name": "hexanator",
@@ -39,8 +37,13 @@ def test_startup():
 
     assert state.unit_status == ops.ActiveStatus()
     assert relation.local_app_data == {"model": ANY, "name": '"hexanator"', "port": "80", "strip-prefix": "true"}
+
     # FIXME: can't find anything useful to assert on...
     # - (ops.charm.PebbleReadyEvent).workload._pebble._service_status got updated on replan()
     # - but that bit of info seem lost, scenario.state._Event doesn't get updated
-    # - getting mock _pebble out of state maybe?
+    # - state.containers[0].service_status doesn't get updated
+    # https://github.com/canonical/ops-scenario/issues/152
+
     # assert ready_event.workload._pebble._service_status["gubernator"] == "active"
+
+    assert ready_event  # keep ruff happy
