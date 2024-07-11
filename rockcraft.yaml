@@ -35,6 +35,10 @@ services:
       GUBER_TRACING_LEVEL: DEBUG
       GUBER_HTTP_ADDRESS: 0.0.0.0:80
       GUBER_GRPC_ADDRESS: 0.0.0.0:81
+    on-success: shutdown
+    on-failure: shutdown
+    on-check-failure:
+      online: shutdown
 
 checks:
   online:
