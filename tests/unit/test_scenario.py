@@ -23,8 +23,8 @@ def ctx():
 def initial_state():
     pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}  # type: ignore
     container = Container("gubernator", can_connect=True, layers=pebble_layers)
-    ingress = Relation(id=0, endpoint="ingress", interface="ingress", remote_app_name="ingress")
-    rate_limit = Relation(id=1, endpoint="rate-limit", interface="http", remote_app_name="user")
+    ingress = Relation("ingress", id=0, interface="ingress", remote_app_name="ingress")
+    rate_limit = Relation("rate-limit", id=1, interface="http", remote_app_name="user")
     return State(leader=True, relations={ingress, rate_limit}, containers={container})  # type: ignore
 
 
