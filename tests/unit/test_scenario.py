@@ -22,7 +22,7 @@ def ctx():
 @pytest.fixture
 def initial_state():
     pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}  # type: ignore
-    container = Container(name="gubernator", can_connect=True, layers=pebble_layers)
+    container = Container("gubernator", can_connect=True, layers=pebble_layers)
     ingress = Relation(id=0, endpoint="ingress", interface="ingress", remote_app_name="ingress")
     rate_limit = Relation(id=1, endpoint="rate-limit", interface="http", remote_app_name="user")
     return State(leader=True, relations={ingress, rate_limit}, containers={container})  # type: ignore
