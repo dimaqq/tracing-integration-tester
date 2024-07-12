@@ -1,6 +1,7 @@
 from unittest.mock import ANY
 
 import ops
+import pytest
 from charm import HexanatorCharm
 from scenario import Container, Context, Relation, State
 
@@ -13,24 +14,42 @@ def default_pebble_layer() -> dict:
     return tmp
 
 
-def test_startup():
-    ctx = Context(HexanatorCharm)
+@pytest.fixture
+def ctx():
+    return Context(HexanatorCharm)
+
+
+@pytest.fixture
+def initial_state():
     pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}  # type: ignore
     container = Container(name="gubernator", can_connect=True, layers=pebble_layers)
-    relation = Relation(endpoint="ingress", interface="ingress", remote_app_name="ingress")
-    state = State(leader=True, relations={relation}, containers={container})  # type: ignore
+    ingress = Relation(id=0, endpoint="ingress", interface="ingress", remote_app_name="ingress")
+    rate_limit = Relation(id=1, endpoint="rate-limit", interface="http", remote_app_name="user")
+    return State(leader=True, relations={ingress, rate_limit}, containers={container})  # type: ignore
 
-    state = ctx.run(ctx.on.start(), state)
-    state = ctx.run(ctx.on.pebble_ready(container), state)
-    state = ctx.run(ctx.on.relation_joined(relation), state)
 
+def test_startup(ctx, initial_state):
+    container = list(initial_state.containers)[0]
+    state = ctx.run(ctx.on.pebble_ready(container), initial_state)
     assert state.unit_status == ops.ActiveStatus()
+    assert (
+        list(state.containers)[0].service_status["gubernator"] == ops.pebble.ServiceStatus.ACTIVE
+    )
+
+
+def test_ingress(ctx, initial_state):
+    relation = initial_state.get_relation(0)
+    ctx.run(ctx.on.relation_joined(relation), initial_state)
     assert relation.local_app_data == {
         "model": ANY,
         "name": '"hexanator"',
         "port": "80",
         "strip-prefix": "true",
     }
-    assert (
-        list(state.containers)[0].service_status["gubernator"] == ops.pebble.ServiceStatus.ACTIVE
-    )
+
+
+def test_rate_limit(ctx, initial_state, monkeypatch):
+    monkeypatch.setattr("socket.getfqdn", lambda: "hexanator-0.hexanator-endpoints.mymodel.svc.cluster.local")
+    relation = initial_state.get_relation(1)
+    ctx.run(ctx.on.relation_created(relation), initial_state)
+    assert relation.local_app_data == {"url": "http://hexanator-endpoints.mymodel.svc.cluster.local/"}

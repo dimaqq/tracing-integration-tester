@@ -36,6 +36,6 @@ requires:
         limit: 1
         description: tells the load balancer how to call gubernator
 provides:
-    rate-limiting:
+    rate-limit:
         interface: http
         description: tells the consumer application how to call gubernator
