@@ -25,8 +25,8 @@ def kubernetes_service_dns_name():
 class HexanatorCharm(ops.CharmBase):
     """Charm the service."""
 
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, framework: ops.Framework):
+        super().__init__(framework)
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
