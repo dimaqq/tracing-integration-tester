@@ -44,5 +44,6 @@ checks:
     online:
         override: replace
         exec:
+            # The healthcheck binary is provided by gubernator, it uses same env vars as the daemon
             command: /bin/healthcheck
         period: 3s
