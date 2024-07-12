@@ -49,7 +49,11 @@ def test_ingress(ctx, initial_state):
 
 
 def test_rate_limit(ctx, initial_state, monkeypatch):
-    monkeypatch.setattr("socket.getfqdn", lambda: "hexanator-0.hexanator-endpoints.mymodel.svc.cluster.local")
+    monkeypatch.setattr(
+        "socket.getfqdn", lambda: "hexanator-0.hexanator-endpoints.mymodel.svc.cluster.local"
+    )
     relation = initial_state.get_relation(1)
     ctx.run(ctx.on.relation_created(relation), initial_state)
-    assert relation.local_app_data == {"url": "http://hexanator-endpoints.mymodel.svc.cluster.local/"}
+    assert relation.local_app_data == {
+        "url": "http://hexanator-endpoints.mymodel.svc.cluster.local/"
+    }
