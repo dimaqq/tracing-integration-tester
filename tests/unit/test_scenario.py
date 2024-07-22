@@ -6,7 +6,7 @@ from charm import HexanatorCharm
 from scenario import Container, Context, Relation, State
 
 
-def default_pebble_layer() -> dict:
+def default_pebble_layer() -> ops.pebble.LayerDict:
     import yaml
 
     tmp = yaml.safe_load(open("rockcraft.yaml").read())
@@ -21,7 +21,7 @@ def ctx():
 
 @pytest.fixture
 def initial_state():
-    pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}  # type: ignore
+    pebble_layers = {"default": ops.pebble.Layer(raw=default_pebble_layer())}
     container = Container("gubernator", can_connect=True, layers=pebble_layers)
     ingress = Relation("ingress", id=0, interface="ingress", remote_app_name="ingress")
     rate_limit = Relation("rate-limit", id=1, interface="http", remote_app_name="user")
