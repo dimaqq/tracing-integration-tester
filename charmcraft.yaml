@@ -25,7 +25,7 @@ resources:
     gubernator:
         type: oci-image
         description: Gubernator Rock with Pebble
-        upstream-source: docker.io/dimaqq/gubernator:3.0.0
+        upstream-source: docker.io/gubernator-io/gubernator:3.0.0
 
 links:
     source: https://github.com/gubernator-io/gubernator
