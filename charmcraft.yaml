@@ -16,6 +16,9 @@ parts:
     charm:
         plugin: charm
         source: .
+        build-packages:
+            - rustc
+            - cargo
 
 containers:
     gubernator:
