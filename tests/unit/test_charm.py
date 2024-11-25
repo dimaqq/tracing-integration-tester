@@ -5,6 +5,7 @@
 import ops
 import ops.testing
 import pytest
+
 from charm import HexanatorCharm
 
 
