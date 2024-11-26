@@ -2,8 +2,9 @@ from unittest.mock import ANY
 
 import ops
 import pytest
-from charm import HexanatorCharm
 from scenario import Container, Context, Relation, State
+
+from charm import HexanatorCharm
 
 
 def default_pebble_layer() -> ops.pebble.LayerDict:
