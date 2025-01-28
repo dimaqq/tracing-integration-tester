@@ -1,1 +1,1 @@
-ops[testing]
+ops[tracing,testing] @ git+https://github.com/dimaqq/operator.git@feat-otel

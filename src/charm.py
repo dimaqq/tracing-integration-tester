@@ -4,11 +4,11 @@
 """Charmed Gubernator."""
 import socket
 
+import opentelemetry.trace
 import ops
-
-# from charms.tempo_coordinator_k8s.v0.charm_tracing import charm_tracing
-# from charms.tempo_coordinator_k8s.v0.tracing import TracingEndpointRequirer, charm_tracing_config
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
+
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 def kubernetes_service_dns_name():
@@ -44,13 +44,13 @@ class HexanatorCharm(ops.CharmBase):
         The `gubernator` service is configured and enabled in the `rockcraft.yaml` file.
         Pebble starts with `--on-hold` in the workload container, release it.
         """
-        with self.tracer.start_as_current_span("pebble ready"):
+        with tracer.start_as_current_span("pebble ready"):
             event.workload.replan()
             self.unit.status = ops.ActiveStatus()
 
     def _on_relation(self, event: ops.RelationCreatedEvent):
         """Publish the service DNS name to the rate limit user app."""
-        with self.tracer.start_as_current_span("on relation"):
+        with tracer.start_as_current_span("on relation"):
             if self.unit.is_leader():
                 event.relation.data[self.app]["url"] = f"http://{kubernetes_service_dns_name()}/"
 

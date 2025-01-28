@@ -1,2 +1,3 @@
-git+https://github.com/dimaqq/operator.git@feat-otel#egg=ops[tracing]
+opentelemetry-api
+ops[tracing] @ git+https://github.com/dimaqq/operator.git@feat-otel
 pydantic==2.8.2

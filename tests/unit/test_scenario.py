@@ -34,7 +34,7 @@ def test_startup(ctx, initial_state):
     state = ctx.run(ctx.on.pebble_ready(container), initial_state)
     assert state.unit_status == ops.ActiveStatus()
     assert (
-        list(state.containers)[0].service_status["gubernator"] == ops.pebble.ServiceStatus.ACTIVE
+        list(state.containers)[0].service_statuses["gubernator"] == ops.pebble.ServiceStatus.ACTIVE
     )
 
 
