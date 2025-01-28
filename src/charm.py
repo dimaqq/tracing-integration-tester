@@ -32,11 +32,13 @@ class HexanatorCharm(ops.CharmBase):
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
-        # self.tracing = TracingEndpointRequirer(self)
-        # self.tracing_endpoint, self.server_cert = charm_tracing_config(self.tracing)
 
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
+
+        # Ugh, ugly that this is done in __init__...
+        # What it should really be is "before any observed event"
+        ops.configure_tracing_destination("http://192.168.107.4:4318/v1/traces")
 
     def _on_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Kick off Pebble services.
