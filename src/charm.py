@@ -4,10 +4,10 @@
 """Charmed Gubernator."""
 import socket
 
-import opentelemetry
 import ops
-from charms.tempo_coordinator_k8s.v0.charm_tracing import charm_tracing
-from charms.tempo_coordinator_k8s.v0.tracing import TracingEndpointRequirer, charm_tracing_config
+
+# from charms.tempo_coordinator_k8s.v0.charm_tracing import charm_tracing
+# from charms.tempo_coordinator_k8s.v0.tracing import TracingEndpointRequirer, charm_tracing_config
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
 
@@ -25,21 +25,18 @@ def kubernetes_service_dns_name():
     return service_dns_name
 
 
-@charm_tracing(
-    tracing_endpoint="tracing_endpoint",
-)
+# @charm_tracing( tracing_endpoint="tracing_endpoint")
 class HexanatorCharm(ops.CharmBase):
     """Charm the service."""
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
-        self.tracing = TracingEndpointRequirer(self)
-        self.tracing_endpoint, self.server_cert = charm_tracing_config(self.tracing)
+        # self.tracing = TracingEndpointRequirer(self)
+        # self.tracing_endpoint, self.server_cert = charm_tracing_config(self.tracing)
 
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
-        self.tracer = opentelemetry.trace.get_tracer("hexanator")
 
     def _on_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Kick off Pebble services.
