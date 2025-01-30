@@ -46,13 +46,13 @@ class HexanatorCharm(ops.CharmBase):
         The `gubernator` service is configured and enabled in the `rockcraft.yaml` file.
         Pebble starts with `--on-hold` in the workload container, release it.
         """
-        with tracer.start_as_current_span("pebble ready"):
+        with tracer.start_as_current_span("pebble is ready, starting guberantor"):
             event.workload.replan()
             self.unit.status = ops.ActiveStatus()
 
     def _on_relation(self, event: ops.RelationCreatedEvent):
         """Publish the service DNS name to the rate limit user app."""
-        with tracer.start_as_current_span("on relation"):
+        with tracer.start_as_current_span("relation changed, stamp our service name"):
             if self.unit.is_leader():
                 event.relation.data[self.app]["url"] = f"http://{kubernetes_service_dns_name()}/"
 
