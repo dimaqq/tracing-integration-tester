@@ -38,7 +38,7 @@ class HexanatorCharm(ops.CharmBase):
 
         # Ugh, ugly that this is done in __init__...
         # What it should really be is "before any observed event"
-        ops.configure_tracing_destination("http://192.168.107.4:4318/v1/traces")
+        ops.set_tracing_destination(url="http://192.168.107.4:4318/v1/traces")
 
     def _on_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Kick off Pebble services.

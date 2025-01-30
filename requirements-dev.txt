@@ -1,1 +1,1 @@
-ops[tracing,testing] @ https://github.com/dimaqq/operator/archive/refs/tags/2.19.0-rc1.zip
+ops[tracing,testing] @ https://github.com/dimaqq/operator/archive/refs/tags/2.19.0-rc2.zip
