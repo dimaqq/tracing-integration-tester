@@ -42,3 +42,7 @@ provides:
     rate-limit:
         interface: http
         description: tells the consumer application how to call gubernator
+
+charm-libs:
+    - lib: traefik_k8s.ingress
+      version: '2'
