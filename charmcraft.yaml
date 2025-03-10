@@ -33,12 +33,25 @@ resources:
 links:
     source: https://github.com/gubernator-io/gubernator
 
+provides:
+    rate-limit:
+        interface: http
+        description: tells the consumer application how to call gubernator
+
 requires:
     ingress:
         interface: ingress
         limit: 1
         description: tells the load balancer how to call gubernator
-provides:
-    rate-limit:
-        interface: http
-        description: tells the consumer application how to call gubernator
+    charm-tracing:
+        interface: tracing
+        limit: 1
+        optional: true
+    send-ca-cert:
+        interface: certificate_transfer
+        limit: 1
+        optional: true
+
+charm-libs:
+    - lib: traefik_k8s.ingress
+      version: '2'

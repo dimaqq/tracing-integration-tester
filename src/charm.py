@@ -4,8 +4,12 @@
 """Charmed Gubernator."""
 import socket
 
+import opentelemetry.trace
 import ops
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
+from ops._tracing.api import Tracing
+
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 def kubernetes_service_dns_name():
@@ -22,12 +26,23 @@ def kubernetes_service_dns_name():
     return service_dns_name
 
 
+# @charm_tracing( tracing_endpoint="tracing_endpoint")
 class HexanatorCharm(ops.CharmBase):
     """Charm the service."""
 
+    @tracer.start_as_current_span("__init__")
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
-        self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
+        with tracer.start_as_current_span("self.ingress"):
+            self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
+
+        with tracer.start_as_current_span("self.tracing"):
+            self.tracing = Tracing(
+                self,
+                tracing_relation_name="charm-tracing",
+                ca_relation_name="send-ca-cert",
+            )
+
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
 
@@ -37,13 +52,15 @@ class HexanatorCharm(ops.CharmBase):
         The `gubernator` service is configured and enabled in the `rockcraft.yaml` file.
         Pebble starts with `--on-hold` in the workload container, release it.
         """
-        event.workload.replan()
-        self.unit.status = ops.ActiveStatus()
+        with tracer.start_as_current_span("pebble is ready, starting guberantor"):
+            event.workload.replan()
+            self.unit.status = ops.ActiveStatus()
 
     def _on_relation(self, event: ops.RelationCreatedEvent):
         """Publish the service DNS name to the rate limit user app."""
-        if self.unit.is_leader():
-            event.relation.data[self.app]["url"] = f"http://{kubernetes_service_dns_name()}/"
+        with tracer.start_as_current_span("relation changed, stamp our service name"):
+            if self.unit.is_leader():
+                event.relation.data[self.app]["url"] = f"http://{kubernetes_service_dns_name()}/"
 
 
 if __name__ == "__main__":  # pragma: nocover

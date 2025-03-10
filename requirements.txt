@@ -1,2 +1,2 @@
-ops==2.14.1
-pydantic==2.8.2
+opentelemetry-api
+ops[tracing] @ https://github.com/dimaqq/operator/archive/refs/tags/2.20.0-rc2.zip
