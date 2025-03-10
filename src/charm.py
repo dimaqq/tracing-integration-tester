@@ -30,20 +30,21 @@ def kubernetes_service_dns_name():
 class HexanatorCharm(ops.CharmBase):
     """Charm the service."""
 
+    @tracer.start_as_current_span("__init__")
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
-        self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
-        self.tracing = Tracing(
-            tracing_relation_name="charm-tracing",
-            ca_relation_name="send-ca-cart",
-        )
+        with tracer.start_as_current_span("self.ingress"):
+            self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
+
+        with tracer.start_as_current_span("self.tracing"):
+            self.tracing = Tracing(
+                self,
+                tracing_relation_name="charm-tracing",
+                ca_relation_name="send-ca-cert",
+            )
 
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
-
-        # Ugh, ugly that this is done in __init__...
-        # What it should really be is "before any observed event"
-        ops.set_tracing_destination(url="http://192.168.107.4:4318/v1/traces")
 
     def _on_pebble_ready(self, event: ops.PebbleReadyEvent):
         """Kick off Pebble services.
