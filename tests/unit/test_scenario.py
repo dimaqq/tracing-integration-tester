@@ -2,7 +2,6 @@ from unittest.mock import ANY
 
 import ops
 import pytest
-from charm import HexanatorCharm
 from ops.testing import Container, Context, Relation, State
 
 from charm import HexanatorCharm
