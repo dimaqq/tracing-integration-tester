@@ -7,6 +7,7 @@ import socket
 import opentelemetry.trace
 import ops
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
+from ops._tracing.api import Tracing
 
 tracer = opentelemetry.trace.get_tracer(__name__)
 
@@ -32,6 +33,10 @@ class HexanatorCharm(ops.CharmBase):
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
         self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
+        self.tracing = Tracing(
+            tracing_relation_name="charm-tracing",
+            ca_relation_name="send-ca-cart",
+        )
 
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)
