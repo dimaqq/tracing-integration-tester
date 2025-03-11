@@ -2,6 +2,7 @@
 # Copyright 2024 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
 """Charmed Gubernator."""
+import logging
 import socket
 
 import opentelemetry.trace
@@ -61,6 +62,8 @@ class HexanatorCharm(ops.CharmBase):
         with tracer.start_as_current_span("relation changed, stamp our service name"):
             if self.unit.is_leader():
                 event.relation.data[self.app]["url"] = f"http://{kubernetes_service_dns_name()}/"
+            else:
+                logging.debug("I'm not the leader, do nothing")
 
 
 if __name__ == "__main__":  # pragma: nocover
