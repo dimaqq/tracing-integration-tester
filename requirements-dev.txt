@@ -1,1 +1,2 @@
-ops[tracing,testing] @ https://github.com/dimaqq/operator/archive/refs/tags/2.20.0-rc5.zip
+ops-tracing @ https://github.com/dimaqq/operator/archive/refs/tags/2.20.0-rc11.zip#subdirectory=tracing&egg=ops-tracing
+ops[tracing,testing] @ https://github.com/dimaqq/operator/archive/refs/tags/2.20.0-rc11.zip

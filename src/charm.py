@@ -8,7 +8,6 @@ import socket
 import opentelemetry.trace
 import ops
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
-from ops._tracing.api import Tracing
 
 tracer = opentelemetry.trace.get_tracer(__name__)
 
@@ -38,7 +37,7 @@ class HexanatorCharm(ops.CharmBase):
             self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
 
         with tracer.start_as_current_span("self.tracing"):
-            self.tracing = Tracing(
+            self.tracing = ops.tracing.Tracing(
                 self,
                 tracing_relation_name="charm-tracing",
                 ca_relation_name="send-ca-cert",
