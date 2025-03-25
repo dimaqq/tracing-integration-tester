@@ -20,7 +20,10 @@ parts:
         plugin: go
         source: https://github.com/gubernator-io/gubernator.git
         source-type: git
-        source-tag: v3.0
+        # The tip of the v3.0 branch fails the health check
+        # source-branch: v3.0
+        # A known good revision from v3.0 branch from June 2024
+        source-commit: 2903b1b566dc9beab322e37ecef4aff50c1a7a97
         stage-packages:
             - ca-certificates
         after:
