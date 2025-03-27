@@ -14,7 +14,7 @@ platforms:
 # Work-around from https://discourse.charmhub.io/t/charmcraft-3-0-in-the-beta-channel/13469/5?u=dimaqq
 parts:
     charm:
-        plugin: charm
+        plugin: uv
         source: .
         build-packages:
             - cargo
