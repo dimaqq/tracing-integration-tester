@@ -13,9 +13,11 @@ platforms:
     arm64:
 # Work-around from https://discourse.charmhub.io/t/charmcraft-3-0-in-the-beta-channel/13469/5?u=dimaqq
 parts:
-    charm:
+    hexanator:
         plugin: uv
         source: .
+        build-snaps:
+            - astral-uv
         build-packages:
             - cargo
 
