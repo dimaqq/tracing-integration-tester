@@ -6,8 +6,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "opentelemetry-api>=1.31.1",
+    "ops",
     "ops-tracing",
-    "ops[tracing]",
 ]
 
 # Testing tools configuration
@@ -63,5 +63,7 @@ ops = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.z
 
 [dependency-groups]
 dev = [
-    "ops[testing,tracing]",
+    "ops",
+    "ops-scenario",
+    "ops-tracing",
 ]

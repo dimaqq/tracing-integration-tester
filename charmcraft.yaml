@@ -6,12 +6,12 @@ summary: High-performance, distributed rate-limiting service
 description: This is a charm for Gubernator, a high-performance, distributed rate-limiting service.
 
 # charmcraft 3.0
-base: ubuntu@24.04
-build-base: ubuntu@24.04
+base: ubuntu@20.04
+build-base: ubuntu@20.04
 platforms:
     amd64:
     arm64:
-# Work-around from https://discourse.charmhub.io/t/charmcraft-3-0-in-the-beta-channel/13469/5?u=dimaqq
+
 parts:
     hexanator:
         plugin: uv
