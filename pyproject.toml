@@ -56,11 +56,6 @@ skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
 [tool.pyright]
 include = ["src/**.py"]
 
-[tool.uv.sources]
-ops-scenario = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "testing" }
-ops-tracing = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "tracing" }
-ops = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip" }
-
 [dependency-groups]
 dev = [
     "ops",

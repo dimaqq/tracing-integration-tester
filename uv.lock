@@ -50,15 +50,15 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "opentelemetry-api", specifier = ">=1.31.1" },
-    { name = "ops", url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip" },
-    { name = "ops-tracing", url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "tracing" },
+    { name = "ops" },
+    { name = "ops-tracing" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ops", url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip" },
-    { name = "ops-scenario", url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "testing" },
-    { name = "ops-tracing", url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "tracing" },
+    { name = "ops" },
+    { name = "ops-scenario" },
+    { name = "ops-tracing" },
 ]
 
 [[package]]
@@ -134,76 +134,43 @@ wheels = [
 
 [[package]]
 name = "ops"
-version = "2.21.0.dev0"
-source = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip" }
+version = "2.20.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importlib-metadata", version = "8.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "importlib-metadata", version = "8.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
-    { name = "opentelemetry-api" },
     { name = "pyyaml" },
     { name = "websocket-client" },
 ]
-sdist = { hash = "sha256:5b69f385b760a5fc51e0ad35762250b846a1e9df320fcbd0a60ae5d06bcdbfaf" }
-
-[package.metadata]
-requires-dist = [
-    { name = "canonical-sphinx-extensions", marker = "extra == 'docs'" },
-    { name = "furo", marker = "extra == 'docs'" },
-    { name = "importlib-metadata" },
-    { name = "linkify-it-py", marker = "extra == 'docs'" },
-    { name = "myst-parser", marker = "extra == 'docs'" },
-    { name = "opentelemetry-api", specifier = "~=1.0" },
-    { name = "ops-scenario", marker = "extra == 'testing'", specifier = "==7.21.0.dev0" },
-    { name = "ops-tracing", marker = "extra == 'tracing'", specifier = "==2.21.0.dev0" },
-    { name = "pyspelling", marker = "extra == 'docs'" },
-    { name = "pyyaml", specifier = "==6.*" },
-    { name = "sphinx", marker = "extra == 'docs'", specifier = "~=8.0.0" },
-    { name = "sphinx-autobuild", marker = "extra == 'docs'" },
-    { name = "sphinx-copybutton", marker = "extra == 'docs'" },
-    { name = "sphinx-design", marker = "extra == 'docs'" },
-    { name = "sphinx-notfound-page", marker = "extra == 'docs'" },
-    { name = "sphinx-tabs", marker = "extra == 'docs'" },
-    { name = "sphinxcontrib-jquery", marker = "extra == 'docs'" },
-    { name = "sphinxext-opengraph", marker = "extra == 'docs'" },
-    { name = "websocket-client", specifier = "==1.*" },
+sdist = { url = "https://files.pythonhosted.org/packages/17/af/d2eb331b6424b879a448611524f54590fde6e3726f7513941f4fc26c4b08/ops-2.20.0.tar.gz", hash = "sha256:be1dcfd0bb748839fbc200bbd073a6acf9648401c3729db22d8594ebb4301e05", size = 492365 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/83/0acfc15b24d1bc302e47f2e5e9170c8707cef9e7eb90177d38afce8cd6e8/ops-2.20.0-py3-none-any.whl", hash = "sha256:94791a4b45f00c6902494a4934480c85947880b27f5ebf3a0ec32e8cc6279c99", size = 180997 },
 ]
-provides-extras = ["docs", "harness", "testing", "tracing"]
 
 [[package]]
 name = "ops-scenario"
-version = "7.21.0.dev0"
-source = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "testing" }
+version = "7.20.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ops" },
     { name = "pyyaml" },
 ]
-sdist = { hash = "sha256:5b69f385b760a5fc51e0ad35762250b846a1e9df320fcbd0a60ae5d06bcdbfaf" }
-
-[package.metadata]
-requires-dist = [
-    { name = "ops", specifier = "==2.21.0.dev0" },
-    { name = "pyyaml", specifier = ">=6.0.1" },
+sdist = { url = "https://files.pythonhosted.org/packages/d0/d6/85a7d0a1f0df597a82caa5350a45f0e99ef2c72eed5705d80cae72101925/ops_scenario-7.20.0.tar.gz", hash = "sha256:f1c058dac51bb953389cbddedbf131fe545b9932ae8fe32c1e701833b31ea88b", size = 142159 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/a3/8cb3445f8666082a8b20c6547debca47902c15f5a9ff608dd767632b4a70/ops_scenario-7.20.0-py3-none-any.whl", hash = "sha256:ee8defa368751d819e3b8ae08de672fa281af16274567f022c42a5f2c6c584a3", size = 72497 },
 ]
 
 [[package]]
 name = "ops-tracing"
-version = "2.21.0.dev0"
-source = { url = "https://github.com/dimaqq/operator/archive/refs/tags/preview123.zip", subdirectory = "tracing" }
+version = "0.9.6"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "opentelemetry-sdk" },
-    { name = "ops" },
     { name = "otlp-json" },
     { name = "pydantic", version = "2.10.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "pydantic", version = "2.11.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
 ]
-sdist = { hash = "sha256:5b69f385b760a5fc51e0ad35762250b846a1e9df320fcbd0a60ae5d06bcdbfaf" }
-
-[package.metadata]
-requires-dist = [
-    { name = "opentelemetry-sdk", specifier = "~=1.30" },
-    { name = "ops", specifier = "==2.21.0.dev0" },
-    { name = "otlp-json", specifier = ">=0.9.7" },
-    { name = "pydantic" },
+sdist = { url = "https://files.pythonhosted.org/packages/c2/04/e1f89b84468158a5ab223bfa85dd226421e5c4fc1d0acb16b999ed819c9c/ops_tracing-0.9.6.tar.gz", hash = "sha256:3fa3b335984d77bd80e82f0617a0ef92b1d28b9d448848e2c2ecf90a935231c0", size = 26623 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/60/b1/251c5284201b1b9f0c26c1bb5c29b6ba320c0751cc53101cc3243daa9fe5/ops_tracing-0.9.6-py3-none-any.whl", hash = "sha256:66bac5c64e194d1ed323c27ee6da20acde897a8ccfe34fbaf42f949699d14a03", size = 30470 },
 ]
 
 [[package]]
