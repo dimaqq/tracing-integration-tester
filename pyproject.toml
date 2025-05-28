@@ -11,14 +11,6 @@ dependencies = [
     "ops-tracing",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "pyright",
-    "coverage[toml]",
-    "ops-scenario",
-]
-
 # Testing tools configuration
 [tool.coverage.run]
 branch = true
@@ -63,7 +55,7 @@ max-complexity = 10
 skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
 
 [tool.pyright]
-include = ["src/**.py"]
+include = ["src/**/*.py", "tests/**/*.py"]
 
 [tool.uv.sources]
 ops = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip" }
@@ -76,4 +68,8 @@ dev = [
     "pyright",
     "coverage[toml]",
     "ops-scenario",
+]
+integration = [
+    "jubilant",
+    "pytest-operator",
 ]
