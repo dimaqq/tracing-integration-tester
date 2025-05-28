@@ -36,13 +36,12 @@ class HexanatorCharm(ops.CharmBase):
         with tracer.start_as_current_span("self.ingress"):
             self.ingress = IngressPerAppRequirer(self, port=80, strip_prefix=True)
 
-        # The below is only supported in the upcoming release of ops
-        # with tracer.start_as_current_span("self.tracing"):
-        #     self.tracing = ops.tracing.Tracing(
-        #         self,
-        #         tracing_relation_name="charm-tracing",
-        #         ca_relation_name="send-ca-cert",
-        #     )
+        with tracer.start_as_current_span("self.tracing"):
+            self.tracing = ops.tracing.Tracing(
+                self,
+                tracing_relation_name="charm-tracing",
+                ca_relation_name="send-ca-cert",
+            )
 
         self.framework.observe(self.on["gubernator"].pebble_ready, self._on_pebble_ready)
         self.framework.observe(self.on["rate-limit"].relation_created, self._on_relation)

@@ -3,9 +3,10 @@ name = "hexanator"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "opentelemetry-api>=1.31.1",
+    # "ops[tracing]",
     "ops",
     "ops-tracing",
 ]
@@ -56,9 +57,14 @@ skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
 [tool.pyright]
 include = ["src/**.py"]
 
+[tool.uv.sources]
+ops = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip" }
+ops-tracing = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip", subdirectory = "tracing" }
+ops-scenario = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip", subdirectory = "testing" }
+
 [dependency-groups]
 dev = [
-    "ops",
     "ops-scenario",
-    "ops-tracing",
+    "pyright",
+    "pytest>=8.3.5",
 ]
