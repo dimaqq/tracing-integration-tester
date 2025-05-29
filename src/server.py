@@ -2,12 +2,22 @@
 # Copyright 2025 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
 """Tracing Integration Tester Server."""
+from __future__ import annotations
+
 import contextlib
 import json
 import logging
+import os
+import pathlib
 import random
 import socket
+import subprocess
+import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+datadir: pathlib.Path | None = None
+prefix = pathlib.Path("/tmp" if os.geteuid() else "/var/run")
 
 
 class AlwaysOKHandler(BaseHTTPRequestHandler):
@@ -29,6 +39,8 @@ class AlwaysOKHandler(BaseHTTPRequestHandler):
         r["body"] = str(body)
         r["json"] = content
         print(r)
+        assert datadir
+        (datadir / str(time.time())).write_text(json.dumps(r))
 
         # send 200 OK
         self.send_response(200)
@@ -75,12 +87,53 @@ class DualStackServer(ThreadingHTTPServer):
                 socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
         return super().server_bind()
 
+
+def nohup(name: str):
+    subprocess.Popen([sys.executable, pathlib.Path(__file__).resolve(), name], stdin=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+
+
+def start_server(name: str) -> tuple[int, pathlib.Path]:
+    pidfile = prefix / f"tracing-integration-tester-{ name }.pid"
+    portfile = prefix / f"tracing-integration-tester-{ name }.port"
+    datadir = prefix / f"tracing-integration-tester-{ name }.data"
+
+    nohup(name)
+
+    for i in range(10):
+        time.sleep(1)
+        try:
+            pid = int(pidfile.read_text().strip())
+            os.kill(pid, 0)
+            port = int(portfile.read_text().strip())
+            break
+        except Exception:
+            pass
+    else:
+        raise TimeoutError(f"No live server {name=} after 10 seconds")
+
+    return port, datadir
+
+
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
+    logging.basicConfig(level="INFO")
+    self = os.getpid()
+    name = sys.argv[1]
+    pidfile = prefix / f"tracing-integration-tester-{ name }.pid"
+    portfile = prefix / f"tracing-integration-tester-{ name }.port"
+    datadir = prefix / f"tracing-integration-tester-{ name }.data"
+    try:
+        pid = int(pidfile.read_text().strip())
+        os.kill(pid, 0)
+        raise SystemExit(f"Server for {name=} is still running as {pid=}")
+    except Exception:
+        pass
+    # While this is technically racey, we are relying on the caller not to flood us here.
+    try:
+        portfile.unlink()
+    except FileNotFoundError:
+        pass
+    # Here as well.
+    pidfile.write_text(f"{self}\n")
 
     for i in range(10):
         port = random.randint(1025, 10000)
@@ -89,8 +142,11 @@ if __name__ == "__main__":
             break
         except OSError:
             pass
+    else:
+        raise RuntimeError("Could not allocate a port to listen on")
 
-    logging.info("Starting HTTP server on %s", port)
+    portfile.write_text(f"{ port }\n")
+    logging.info("Starting HTTP server for %s on %s", name, port)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
