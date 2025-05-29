@@ -1,14 +1,11 @@
 [project]
-name = "hexanator"
-version = "0.1.0"
-description = "Add your description here"
+name = "tracing-iontegration-tester"
+version = "1.0.0"
+description = "Tracing Integeration Tester"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 dependencies = [
-    "opentelemetry-api>=1.31.1",
-    # "ops[tracing]",
     "ops",
-    "ops-tracing",
 ]
 
 # Testing tools configuration
@@ -56,20 +53,3 @@ skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
 
 [tool.pyright]
 include = ["src/**/*.py", "tests/**/*.py"]
-
-[tool.uv.sources]
-ops = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip" }
-ops-tracing = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip", subdirectory = "tracing" }
-ops-scenario = { url = "https://github.com/dimaqq/operator/archive/refs/tags/v789.zip", subdirectory = "testing" }
-
-[dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-    "pyright",
-    "coverage[toml]",
-    "ops-scenario",
-]
-integration = [
-    "jubilant",
-    "pytest-operator",
-]

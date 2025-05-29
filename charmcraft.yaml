@@ -1,16 +1,14 @@
 ---
-name: hexanator
+name: tracing-integration-tester
 type: charm
-title: Charmed Gubernator
-summary: High-performance, distributed rate-limiting service
-description: This is a charm for Gubernator, a high-performance, distributed rate-limiting service.
+title: Tracing Integration Tester
+summary: Tracing Integration Tester
+description: Tracing Integration Tester
 
-# charmcraft 3.0
-base: ubuntu@20.04
-build-base: ubuntu@20.04
+base: ubuntu@22.04
+build-base: ubuntu@22.04
 platforms:
     amd64:
-    arm64:
 
 parts:
     hexanator:
@@ -18,41 +16,13 @@ parts:
         source: .
         build-snaps:
             - astral-uv
-        build-packages:
-            - cargo
-
-containers:
-    gubernator:
-        resource: gubernator
-
-resources:
-    gubernator:
-        type: oci-image
-        description: Gubernator Rock with Pebble
-        upstream-source: docker.io/gubernator-io/gubernator:3.0.0
-
-links:
-    source: https://github.com/gubernator-io/gubernator
 
 provides:
-    rate-limit:
-        interface: http
-        description: tells the consumer application how to call gubernator
-
-requires:
-    ingress:
-        interface: ingress
-        limit: 1
-        description: tells the load balancer how to call gubernator
-    charm-tracing:
+    tracing:
         interface: tracing
-        limit: 1
         optional: true
+requires:
     send-ca-cert:
         interface: certificate_transfer
         limit: 1
         optional: true
-
-charm-libs:
-    - lib: traefik_k8s.ingress
-      version: '2'
