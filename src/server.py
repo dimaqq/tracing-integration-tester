@@ -92,6 +92,24 @@ def nohup(name: str):
     subprocess.Popen([sys.executable, pathlib.Path(__file__).resolve(), name], stdin=subprocess.DEVNULL, start_new_session=True, close_fds=True)
 
 
+def starting(name: str) -> bool:
+    ...
+
+
+def started(name: str) -> tuple[int, pathlib.Path]:
+    pidfile = prefix / f"tracing-integration-tester-{ name }.pid"
+    portfile = prefix / f"tracing-integration-tester-{ name }.port"
+    datadir = prefix / f"tracing-integration-tester-{ name }.data"
+
+    pid = int(pidfile.read_text().strip())
+    os.kill(pid, 0)
+    port = int(portfile.read_text().strip())
+
+    assert datadir.is_dir()
+
+    return port, datadir
+
+
 def start_server(name: str) -> tuple[int, pathlib.Path]:
     pidfile = prefix / f"tracing-integration-tester-{ name }.pid"
     portfile = prefix / f"tracing-integration-tester-{ name }.port"

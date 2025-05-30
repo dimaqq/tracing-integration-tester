@@ -5,17 +5,15 @@ title: Tracing Integration Tester
 summary: Tracing Integration Tester
 description: Tracing Integration Tester
 
-base: ubuntu@22.04
-build-base: ubuntu@22.04
+base: ubuntu@24.04
+build-base: ubuntu@24.04
 platforms:
     amd64:
 
 parts:
-    hexanator:
-        plugin: uv
+    tester:
+        plugin: charm
         source: .
-        build-snaps:
-            - astral-uv
 
 provides:
     tracing:
