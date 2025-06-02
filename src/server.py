@@ -11,7 +11,6 @@ import json
 import logging
 import os
 import pathlib
-import random
 import signal
 import socket
 import sqlite3
@@ -27,7 +26,7 @@ datadir = prefix / "server.data"
 class Recorder(http.server.BaseHTTPRequestHandler):
     """Record any incoming HTTP request."""
 
-    name: str
+    server: DualStackServer  # type: ignore
 
     def respond(self, method: str):
         r = {}
@@ -45,7 +44,7 @@ class Recorder(http.server.BaseHTTPRequestHandler):
 
         r["body"] = str(body)
         r["json"] = content
-        print(self.name, r)
+        print(self.server.name, r)
         assert datadir
         (datadir / str(time.time())).write_text(json.dumps(r))
 
@@ -87,15 +86,21 @@ class Recorder(http.server.BaseHTTPRequestHandler):
 class DualStackServer(http.server.ThreadingHTTPServer):
     """Copied from Python's http.server module."""
 
-    def __init__(self, address, *args, **kwargs):
-        self.address_family, _ = http.server._get_best_family(*address)  # type: ignore
+    def __init__(self, address, *args, name: str, **kwargs):
+        self.name = name
+        addrs = socket.getaddrinfo(None, 0, type=socket.SOCK_STREAM, flags=socket.AI_PASSIVE)
+        addrs6 = [a for a in addrs if a[0] == socket.AF_INET6]
+        self.address_family, _, _, _, self._server_address = (addrs6 or addrs)[0]  # type: ignore
         super().__init__(address, *args, **kwargs)
 
     def server_bind(self):
         # suppress exception when protocol is IPv4
         with contextlib.suppress(Exception):
+            # In case dual-stack is disabled in sysctl, re-enable it
             self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
-        return super().server_bind()
+
+        self.socket.bind(self._server_address)
+        self.server_name, self.server_port = self.socket.getsockname()[:2]
 
 
 def nohup(name: str):
@@ -247,28 +252,15 @@ def run(name: str):
 
         conn.execute("UPDATE server SET pid=?, port=NULL, up=FALSE WHERE name=?", (pid, name))
 
-    for i in range(10):
-        port = random.randint(1025, 10000)
-        try:
-            server = DualStackServer(("", port), Recorder)
-            server.RequestHandlerClass.name = name  # type: ignore
-            break
-        except OSError:
-            pass
-    else:
-        raise RuntimeError("Could not allocate a port to listen on")
+        server = DualStackServer((None, 0), Recorder, name=name)
+        conn.execute("UPDATE server SET port=? WHERE name=?", (server.server_port, name))
 
-    with tx() as conn:
-        conn.execute("UPDATE server SET port=? WHERE name=?", (port, name))
-
-    logging.info(f"Started {name=} on {port=}")
+    logging.info(f"Started {server.name=} on {server.server_port=}")
     try:
         server.serve_forever()
-    except KeyboardInterrupt:
-        logging.info(f"Shut down {name=} on {port=}")
-        server.server_close()
     except BaseException:
-        logging.info(f"Exited {name=} on {port=}")
+        logging.info(f"Exited {server.name=} on {server.server_port=}")
+        server.server_close()
         raise
 
 
