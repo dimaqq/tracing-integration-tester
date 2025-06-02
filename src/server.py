@@ -41,10 +41,9 @@ class Recorder(http.server.BaseHTTPRequestHandler):
         except Exception as e:
             logging.debug("Doesn't look like JSON to me: %s", e)
 
-        print(content or body)
         r["body"] = str(body)
         r["json"] = content
-        print(r)
+        print(self.name, r)
         assert datadir
         (datadir / str(time.time())).write_text(json.dumps(r))
 
@@ -100,10 +99,19 @@ class DualStackServer(http.server.ThreadingHTTPServer):
 
 def nohup(name: str):
     """Start a named server like `nohup foo &`."""
+    logging.info(f"Starting {name=} ...")
     subprocess.Popen([sys.executable, pathlib.Path(__file__).resolve(), name], stdin=subprocess.DEVNULL, start_new_session=True, close_fds=True)
 
 
-def ensure_started(name: str) -> None:
+def list_server_names() -> set[str]:
+    """Return the set of registered server names."""
+    with tx() as conn:
+        # FIXME do we care about .up?
+        cursor = conn.execute("SELECT name FROM server")
+        return {c[0] for c in cursor}
+
+
+def ensure_started(name: str) -> int:
     """Make sure that the named server is running."""
     pid: int|None = None
 
@@ -141,7 +149,7 @@ def ensure_started(name: str) -> None:
 
             try:
                 urllib.request.urlopen(f"http://localhost:{port}/internal-health-check", timeout=1)
-                break
+                return port
             except OSError:
                 # Not ready to serve
                 continue
@@ -169,6 +177,7 @@ def ensure_stopped(name: str) -> None:
             conn.execute("DELETE FROM server WHERE name=?", (name,))
             return
 
+        logging.info(f"Stopping {name=} ...")
         os.kill(pid, signal.SIGTERM)
 
         try:
@@ -246,12 +255,15 @@ def run(name: str):
     with tx() as conn:
         conn.execute("UPDATE server SET port=? WHERE name=?", (port, name))
 
-    logging.info(f"Starting {name=} on {port=}")
+    logging.info(f"Started {name=} on {port=}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        logging.info(f"Shutting down {name=} on {port=}")
+        logging.info(f"Shut down {name=} on {port=}")
         server.server_close()
+    except BaseException:
+        logging.info(f"Exited {name=} on {port=}")
+        raise
 
 
 if __name__ == "__main__":
