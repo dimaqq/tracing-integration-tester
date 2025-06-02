@@ -10,7 +10,7 @@ import typing
 
 import ops
 
-from . import server
+import server
 
 
 class TracingIntegrationTester(ops.CharmBase):
