@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import contextlib
+import http.server
 import json
 import logging
 import os
@@ -17,13 +18,12 @@ import subprocess
 import sys
 import time
 import urllib.request
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 prefix = pathlib.Path("/tmp" if os.geteuid() else "/var/run")
 datadir = prefix / "server.data"
 
 
-class Recorder(BaseHTTPRequestHandler):
+class Recorder(http.server.BaseHTTPRequestHandler):
     """Record any incoming HTTP request."""
     name: str
 
@@ -53,8 +53,9 @@ class Recorder(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):  # noqa: N802
-        if self.path == "internal-health-check":
+        if self.path == "/internal-health-check":
             self.send_response(200)
+            self.end_headers()
             return
         else:
             return self.respond("GET")
@@ -82,16 +83,18 @@ class Recorder(BaseHTTPRequestHandler):
         pass
 
 
-class DualStackServer(ThreadingHTTPServer):
-    """Copied from Python http module."""
+class DualStackServer(http.server.ThreadingHTTPServer):
+    """Copied from Python's http.server module."""
+
+    def __init__(self, address, *args, **kwargs):
+        self.address_family, _ = http.server._get_best_family(*address)  # type: ignore
+        super().__init__(address, *args, **kwargs)
+
     def server_bind(self):
         # suppress exception when protocol is IPv4
-        #with contextlib.suppress(Exception):
-        try:
+        with contextlib.suppress(Exception):
             self.socket.setsockopt(
                 socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
-        except Exception:
-            logging.exception("ignoramus")
         return super().server_bind()
 
 
