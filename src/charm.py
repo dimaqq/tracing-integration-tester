@@ -23,11 +23,12 @@ class TracingIntegrationTester(ops.CharmBase):
         self.framework.observe(self.on.tracing_relation_broken, self.reconcile)
 
     def reconcile(self, event: typing.Any):
-        host = socket.getfqdn()
         if not self.unit.is_leader():
             logging.warning("This app should not be scaled out.")
             return
 
+        host = socket.getfqdn()
+        server.init_db()
         requested: set[str] = set()
         for rel in self.model.relations["tracing"]:
             if not rel.app.name:
