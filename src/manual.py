@@ -2,6 +2,7 @@
 # Copyright 2025 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
 """Fixme don't merge this."""
+
 from __future__ import annotations
 
 import logging
@@ -19,9 +20,12 @@ def main(input_file):
     for destroy in running - wanted:
         ensure_stopped(destroy)
     portmap = {name: ensure_started(name) for name in wanted}
-    input_file.with_suffix(".out").write_text("\n".join(f"{k}: http://localhost:{v}/" for k, v in portmap.items()))
+    input_file.with_suffix(".out").write_text(
+        "\n".join(f"{k}: http://localhost:{v}/" for k, v in portmap.items())
+    )
     for name, port in portmap.items():
         pathlib.Path(f"{name}.url").write_text(f"http://localhost:{port}/")
+
 
 if __name__ == "__main__":
     logging.basicConfig(level="DEBUG")

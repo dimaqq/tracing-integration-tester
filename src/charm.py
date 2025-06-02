@@ -2,6 +2,7 @@
 # Copyright 2025 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
 """Tracing Integration Tester."""
+
 import json
 import logging
 import socket
@@ -35,18 +36,21 @@ class TracingIntegrationTester(ops.CharmBase):
             requested.add(rel.app.name)
             port = server.ensure_started(rel.app.name)
             rel.data[self.app]["foo"] = json.dumps(
-   {"receivers": [
-       {
-           "protocol": {"name": "otlp_http", "type": "http"},
-           "url": f"http//{host}:{port}/v1/traces",
-       },
-   ]}
-                    )
+                {
+                    "receivers": [
+                        {
+                            "protocol": {"name": "otlp_http", "type": "http"},
+                            "url": f"http//{host}:{port}/v1/traces",
+                        },
+                    ]
+                }
+            )
 
         for redundant in server.list_server_names() - requested:
             server.ensure_stopped(redundant)
 
         print(f"\n\n{event}\n\n")
+
 
 if __name__ == "__main__":
     ops.main(TracingIntegrationTester)

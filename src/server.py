@@ -2,6 +2,7 @@
 # Copyright 2025 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
 """Tracing Integration Tester Server."""
+
 from __future__ import annotations
 
 import contextlib
@@ -25,6 +26,7 @@ datadir = prefix / "server.data"
 
 class Recorder(http.server.BaseHTTPRequestHandler):
     """Record any incoming HTTP request."""
+
     name: str
 
     def respond(self, method: str):
@@ -92,15 +94,19 @@ class DualStackServer(http.server.ThreadingHTTPServer):
     def server_bind(self):
         # suppress exception when protocol is IPv4
         with contextlib.suppress(Exception):
-            self.socket.setsockopt(
-                socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+            self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
         return super().server_bind()
 
 
 def nohup(name: str):
     """Start a named server like `nohup foo &`."""
     logging.info(f"Starting {name=} ...")
-    subprocess.Popen([sys.executable, pathlib.Path(__file__).resolve(), name], stdin=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+    subprocess.Popen(
+        [sys.executable, pathlib.Path(__file__).resolve(), name],
+        stdin=subprocess.DEVNULL,
+        start_new_session=True,
+        close_fds=True,
+    )
 
 
 def list_server_names() -> set[str]:
@@ -113,7 +119,7 @@ def list_server_names() -> set[str]:
 
 def ensure_started(name: str) -> int:
     """Make sure that the named server is running."""
-    pid: int|None = None
+    pid: int | None = None
 
     with tx() as conn:
         c = conn.execute("SELECT pid FROM server WHERE name=?", (name,)).fetchone()
@@ -196,7 +202,6 @@ def ensure_stopped(name: str) -> None:
             return
 
 
-
 @contextlib.contextmanager
 def tx():
     """Context manager to set up and tear down an exclusive database transaction."""
@@ -222,7 +227,8 @@ def init_db():
                 port INTEGER,
                 up BOOLEAN NOT NULL DEFAULT(TRUE)
             )
-            """)
+            """
+        )
     datadir.mkdir(exist_ok=True)
 
 
