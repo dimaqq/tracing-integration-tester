@@ -44,7 +44,7 @@ class Recorder(http.server.BaseHTTPRequestHandler):
 
         r["body"] = str(body)
         r["json"] = content
-        print(self.server.name, r)
+        logging.info("%s: %s", self.server.name, r)
         assert datadir
         (datadir / str(time.time())).write_text(json.dumps(r))
 

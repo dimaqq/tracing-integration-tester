@@ -31,12 +31,12 @@ class TracingIntegrationTester(ops.CharmBase):
 
         host = socket.getfqdn()
         server.init_db()
-        requested: set[str] = set()
+        servers: set[str] = set()
         for rel in self.model.relations["tracing"]:
             if not rel.app.name:
                 logging.warning("FIXME %s", [event, rel, rel.app, rel.app.name])
                 continue
-            requested.add(rel.app.name)
+            servers.add(rel.app.name)
             port = server.ensure_started(rel.app.name)
             rel.data[self.app]["receivers"] = json.dumps(
                 [
@@ -47,10 +47,10 @@ class TracingIntegrationTester(ops.CharmBase):
                 ]
             )
 
-        for redundant in server.list_server_names() - requested:
+        for redundant in server.list_server_names() - servers:
             server.ensure_stopped(redundant)
 
-        print(f"\n\n{event}\n\n")
+        self.model.app.status = ops.ActiveStatus(str(servers))
 
 
 if __name__ == "__main__":
