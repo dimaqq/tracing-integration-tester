@@ -20,6 +20,8 @@ class TracingIntegrationTester(ops.CharmBase):
         super().__init__(framework)
         self.framework.observe(self.on.config_changed, self.reconcile)
         self.framework.observe(self.on.tracing_relation_created, self.reconcile)
+        self.framework.observe(self.on.tracing_relation_joined, self.reconcile)
+        self.framework.observe(self.on.tracing_relation_departed, self.reconcile)
         self.framework.observe(self.on.tracing_relation_broken, self.reconcile)
 
     def reconcile(self, event: typing.Any):
@@ -36,15 +38,13 @@ class TracingIntegrationTester(ops.CharmBase):
                 continue
             requested.add(rel.app.name)
             port = server.ensure_started(rel.app.name)
-            rel.data[self.app]["foo"] = json.dumps(
-                {
-                    "receivers": [
-                        {
-                            "protocol": {"name": "otlp_http", "type": "http"},
-                            "url": f"http//{host}:{port}/v1/traces",
-                        },
-                    ]
-                }
+            rel.data[self.app]["receivers"] = json.dumps(
+                [
+                    {
+                        "protocol": {"name": "otlp_http", "type": "http"},
+                        "url": f"http://{host}:{port}/",
+                    }
+                ]
             )
 
         for redundant in server.list_server_names() - requested:
