@@ -86,11 +86,11 @@ class Recorder(http.server.BaseHTTPRequestHandler):
 class DualStackServer(http.server.ThreadingHTTPServer):
     """Copied from Python's http.server module."""
 
-    def __init__(self, address, *args, name: str, **kwargs):
+    def __init__(self, *args, name: str, **kwargs):
         self.name = name
         addrs = socket.getaddrinfo(None, 0, type=socket.SOCK_STREAM, flags=socket.AI_PASSIVE)
         addrs6 = [a for a in addrs if a[0] == socket.AF_INET6]
-        self.address_family, _, _, _, self._server_address = (addrs6 or addrs)[0]  # type: ignore
+        self.address_family, _, _, _, address = (addrs6 or addrs)[0]  # type: ignore
         super().__init__(address, *args, **kwargs)
 
     def server_bind(self):
@@ -99,7 +99,7 @@ class DualStackServer(http.server.ThreadingHTTPServer):
             # In case dual-stack is disabled in sysctl, re-enable it
             self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
 
-        self.socket.bind(self._server_address)
+        self.socket.bind(self.server_address)
         self.server_name, self.server_port = self.socket.getsockname()[:2]
 
 
@@ -143,8 +143,8 @@ def ensure_started(name: str) -> int:
             conn.execute("INSERT INTO server (name) VALUES (?)", (name,))
         nohup(name)
 
-    for i in range(10):
-        time.sleep(1)
+    for delay in [2**x for x in range(-4, 3)]:
+        time.sleep(delay)
         with tx() as conn:
             c = conn.execute("SELECT pid, port FROM server WHERE name=?", (name,)).fetchone()
             if not c:
@@ -165,7 +165,7 @@ def ensure_started(name: str) -> int:
                 # Not ready to serve
                 continue
     else:
-        raise TimeoutError(f"No live server {name=} after 10 seconds")
+        raise TimeoutError(f"No live server {name=} after 8 seconds")
 
 
 def ensure_stopped(name: str) -> None:
@@ -193,7 +193,6 @@ def ensure_stopped(name: str) -> None:
 
         try:
             time.sleep(1)
-            os.kill(pid, 0)
             os.kill(pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
@@ -252,7 +251,7 @@ def run(name: str):
 
         conn.execute("UPDATE server SET pid=?, port=NULL, up=FALSE WHERE name=?", (pid, name))
 
-        server = DualStackServer((None, 0), Recorder, name=name)
+        server = DualStackServer(Recorder, name=name)
         conn.execute("UPDATE server SET port=? WHERE name=?", (server.server_port, name))
 
     logging.info(f"Started {server.name=} on {server.server_port=}")
