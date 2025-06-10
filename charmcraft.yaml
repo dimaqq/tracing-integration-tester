@@ -31,10 +31,10 @@ actions:
         required: []
         params:
             start:
-                type: float
+                type: number
                 description: Optional start time, seconds since epoch.
             end:
-                type: float
+                type: number
                 description: Optional end time, seconds since epoch.
             app:
                 type: string
