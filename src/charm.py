@@ -18,11 +18,14 @@ class TracingIntegrationTester(ops.CharmBase):
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
+
         self.framework.observe(self.on.config_changed, self.reconcile)
         self.framework.observe(self.on.tracing_relation_created, self.reconcile)
         self.framework.observe(self.on.tracing_relation_joined, self.reconcile)
         self.framework.observe(self.on.tracing_relation_departed, self.reconcile)
         self.framework.observe(self.on.tracing_relation_broken, self.reconcile)
+
+        self.framework.observe(self.on.get_traces_action, self.get_traces_action)
 
     def reconcile(self, event: typing.Any):
         if not self.unit.is_leader():
@@ -51,6 +54,12 @@ class TracingIntegrationTester(ops.CharmBase):
             server.ensure_stopped(redundant)
 
         self.model.app.status = ops.ActiveStatus(str(servers))
+
+    def get_traces_action(self, event: ops.ActionEvent):
+        # FIXME implement filter by start, end, application
+        # event.params ...
+        traces = [str(p) for p in server.datadir.glob("*.json")]
+        event.set_results({"traces": json.dumps(traces)})
 
 
 if __name__ == "__main__":

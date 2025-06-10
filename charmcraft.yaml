@@ -24,3 +24,20 @@ requires:
         interface: certificate_transfer
         limit: 1
         optional: true
+
+actions:
+    get-traces:
+        description: Retrieve collected traces.
+        params:
+            start:
+                type: float
+                description: Optional start time, seconds since epoch.
+                required: false
+            end:
+                type: float
+                description: Optional end time, seconds since epoch.
+                required: false
+            app:
+                type: string
+                description: Optional application name, whose traces to return.
+                required: false

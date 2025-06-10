@@ -90,8 +90,11 @@ class DualStackServer(http.server.ThreadingHTTPServer):
         self.name = name
         addrs = socket.getaddrinfo(None, 0, type=socket.SOCK_STREAM, flags=socket.AI_PASSIVE)
         addrs6 = [a for a in addrs if a[0] == socket.AF_INET6]
-        self.address_family, _, _, _, address = (addrs6 or addrs)[0]  # type: ignore
-        super().__init__(address, *args, **kwargs)
+        self.address_family, _, _, _, address = (addrs6 or addrs)[0]
+        # The parent constructor sets self.server_address to our address.
+        # The parent class expects an IPv4 tuple,
+        # however we suppose both IPv4 and IPv6 tuples in custom server_bind.
+        super().__init__(address, *args, **kwargs)  # type: ignore
 
     def server_bind(self):
         # suppress exception when protocol is IPv4
