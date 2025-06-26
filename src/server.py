@@ -19,8 +19,8 @@ import sys
 import time
 import urllib.request
 
-prefix = pathlib.Path("/tmp" if os.geteuid() else "/var/run")
-datadir = prefix / "server.data"
+datadir = pathlib.Path("/tmp/server.data")
+dbfile = pathlib.Path("/tmp/server.db")
 
 
 class Recorder(http.server.BaseHTTPRequestHandler):
@@ -215,7 +215,7 @@ def ensure_stopped(name: str) -> None:
 @contextlib.contextmanager
 def tx():
     """Context manager to set up and tear down an exclusive database transaction."""
-    with sqlite3.connect(prefix / "server.db", isolation_level=None, timeout=5) as conn:
+    with sqlite3.connect(dbfile, isolation_level=None, timeout=5) as conn:
         conn.execute("BEGIN IMMEDIATE")
         try:
             yield conn
@@ -272,4 +272,5 @@ def run(name: str):
 if __name__ == "__main__":
     logging.basicConfig(level="INFO")
     name = sys.argv[1]
+    init_db()
     run(name)
