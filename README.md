@@ -1,4 +1,4 @@
-# Tracing Integeration Tester
+# Tracing Integration Tester
 
 This is a mock trace data collector.
 

@@ -6,12 +6,12 @@ import ops
 import ops.testing
 import pytest
 
-from charm import HexanatorCharm
+from charm import TracingIntegrationTester
 
 
 @pytest.fixture
 def harness():
-    harness = ops.testing.Harness(HexanatorCharm)
+    harness = ops.testing.Harness(TracingIntegrationTester)
     harness.begin()
     yield harness
     harness.cleanup()

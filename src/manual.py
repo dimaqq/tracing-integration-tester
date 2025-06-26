@@ -30,7 +30,9 @@ def main(input_file):
 if __name__ == "__main__":
     logging.basicConfig(level="DEBUG")
     if not sys.argv[1:]:
-        print(f"""Usage: {sys.argv[0]} an_input_file
-    Where `an_input_file` lists required server names one per line.""")
+        print(
+            f"""Usage: {sys.argv[0]} an_input_file
+    Where `an_input_file` lists required server names one per line."""
+        )
         exit(1)
     main(pathlib.Path(sys.argv[1]))

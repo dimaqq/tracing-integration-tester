@@ -4,7 +4,7 @@ import ops
 import pytest
 from ops.testing import Container, Context, Relation, State
 
-from charm import HexanatorCharm
+from charm import TracingIntegrationTester
 
 
 def default_pebble_layer() -> ops.pebble.LayerDict:
@@ -17,7 +17,7 @@ def default_pebble_layer() -> ops.pebble.LayerDict:
 
 @pytest.fixture
 def ctx():
-    return Context(HexanatorCharm)
+    return Context(TracingIntegrationTester)
 
 
 @pytest.fixture

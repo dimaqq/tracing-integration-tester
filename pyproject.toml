@@ -1,7 +1,7 @@
 [project]
 name = "tracing-iontegration-tester"
 version = "1.0.0"
-description = "Tracing Integeration Tester"
+description = "Tracing Integration Tester"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
