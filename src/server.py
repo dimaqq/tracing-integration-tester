@@ -46,10 +46,13 @@ class Recorder(http.server.BaseHTTPRequestHandler):
         r["json"] = content
         logging.info("%s: %s", self.server.name, r)
         assert datadir
-        (datadir / str(time.time())).write_text(json.dumps(r))
+        filename = f"{self.server.name}-{str(time.time())}.json"
+        (datadir / filename).write_text(json.dumps(r))
 
         # send 200 OK
         self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", "0")
         self.end_headers()
 
     def do_GET(self):  # noqa: N802
