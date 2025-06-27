@@ -26,16 +26,36 @@ requires:
         optional: true
 
 actions:
-    get-traces:
+    list-traces:
         description: Retrieve collected traces.
         required: []
         params:
+            apps:
+                type: string
+                description: One or more app names, separated by commas.
             start:
                 type: number
                 description: Optional start time, seconds since epoch.
             end:
                 type: number
                 description: Optional end time, seconds since epoch.
-            app:
+    drop-traces:
+        description: Delete collected traces.
+        required: []
+        params:
+            apps:
                 type: string
-                description: Optional application name, whose traces to return.
+                description: One or more app names, separated by commas.
+            start:
+                type: number
+                description: Optional start time, seconds since epoch.
+            end:
+                type: number
+                description: Optional end time, seconds since epoch.
+    read-trace:
+        description: Delete collected traces.
+        required: [path]
+        params:
+            path:
+                type: string
+                description: An absolute path to read.
