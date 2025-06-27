@@ -62,14 +62,14 @@ class TracingIntegrationTester(ops.CharmBase):
         apps = [a.strip() for a in event.params.get("apps", "").split(",") if a.strip()]
         start = event.params.get("start", float("-inf"))
         end = event.params.get("end", float("inf"))
-        paths = [t for t in server.datadir.glob("*.json") if fixme(t, apps, start, end)]
-        event.set_results({"traces": json.dumps(map(str, paths))})
+        paths = [t for t in server.datadir.glob("*.json") if match(t, apps, start, end)]
+        event.set_results({"traces": json.dumps([str(p) for p in paths])})
 
     def drop_traces(self, event: ops.ActionEvent):
         apps = [a.strip() for a in event.params.get("apps", "").split(",") if a.strip()]
         start = event.params.get("start", float("-inf"))
         end = event.params.get("end", float("inf"))
-        paths = [t for t in server.datadir.glob("*.json") if fixme(t, apps, start, end)]
+        paths = [t for t in server.datadir.glob("*.json") if match(t, apps, start, end)]
         for path in paths:
             try:
                 path.unlink()
@@ -86,7 +86,7 @@ class TracingIntegrationTester(ops.CharmBase):
             event.fail(repr(e))
 
 
-def fixme(path: pathlib.Path, apps: list[str], start: float, end: float):
+def match(path: pathlib.Path, apps: list[str], start: float, end: float):
     """Determine if a particular trace file matches the filters."""
     try:
         app, ts = path.stem.split("-")
