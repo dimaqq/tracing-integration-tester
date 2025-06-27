@@ -75,7 +75,7 @@ class TracingIntegrationTester(ops.CharmBase):
                 path.unlink()
             except FileNotFoundError:
                 pass
-        event.set_results({})
+        event.set_results({"info": f"Dropped {len(paths)} files."})
 
     def read_trace(self, event: ops.ActionEvent):
         path = pathlib.Path(event.params["path"])
@@ -95,7 +95,7 @@ def match(path: pathlib.Path, apps: list[str], start: float, end: float):
         logging.warning("Skipping data file %r", path)
         return False
 
-    return start < time < end and (app in apps or not apps)
+    return start <= time <= end and (app in apps or not apps)
 
 
 if __name__ == "__main__":
