@@ -1,28 +1,16 @@
 [project]
-name = "tracing-iontegration-tester"
+name = "tracing-fake"
 version = "1.0.0"
-description = "Tracing Integration Tester"
+description = "Tracing Fake"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "ops",
 ]
 
-# Testing tools configuration
-[tool.coverage.run]
-branch = true
-
-[tool.coverage.report]
-show_missing = true
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 log_cli_level = "INFO"
-
-# Formatting tools configuration
-[tool.black]
-line-length = 99
-target-version = ["py38"]
 
 # Linting tools configuration
 [tool.ruff]
@@ -44,25 +32,24 @@ extend-ignore = [
 ]
 ignore = ["E501", "D107"]
 extend-exclude = ["__pycache__", "*.egg_info"]
-per-file-ignores = {"tests/*" = ["D100","D101","D103","D104","D205","D415"], "lib/*" = ["D401"]}
+lint.per-file-ignores = {"tests/*" = ["D100","D101","D103","D104","D205","D415"], "lib/*" = ["D401"]}
 
 [tool.ruff.mccabe]
 max-complexity = 10
 
 [tool.codespell]
-skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage"
+skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage,htmlcov"
 
 [tool.pyright]
 include = ["src/**/*.py", "tests/**/*.py"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.3.5",
+    "pytest~=8.3",
+    "pytest-coverage",
     "pyright",
     "ruff",
-    "coverage[toml]",
-    "ops-scenario",
-]
-integration = [
+    "codespell",
+    "ops[testing]",
     "jubilant",
 ]

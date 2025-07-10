@@ -1,9 +1,9 @@
 ---
-name: tracing-integration-tester
+name: tracing-fake
 type: charm
-title: Tracing Integration Tester
-summary: Tracing Integration Tester
-description: Tracing Integration Tester
+title: Tracing Fake
+summary: Tracing fake, a charm to test your application's tracing against.
+description: Tracing fake, a charm to test your application's tracing against.
 
 base: ubuntu@24.04
 build-base: ubuntu@24.04

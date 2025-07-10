@@ -5,7 +5,7 @@ import ops
 import pytest
 from ops.testing import Context, Relation, State
 
-from charm import TracingIntegrationTester
+from charm import TracingFake
 
 
 def default_pebble_layer() -> ops.pebble.LayerDict:
@@ -18,7 +18,7 @@ def default_pebble_layer() -> ops.pebble.LayerDict:
 
 @pytest.fixture
 def ctx():
-    return Context(TracingIntegrationTester)
+    return Context(TracingFake)
 
 
 @pytest.fixture

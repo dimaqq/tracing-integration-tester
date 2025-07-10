@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2025 dima.tisnek@canonical.com
 # See LICENSE file for licensing details.
-"""Tracing Integration Tester."""
+"""Tracing Fake."""
 
 import json
 import logging
@@ -14,7 +14,7 @@ import ops
 import server
 
 
-class TracingIntegrationTester(ops.CharmBase):
+class TracingFake(ops.CharmBase):
     """Charm the service."""
 
     def __init__(self, framework: ops.Framework):
@@ -99,4 +99,4 @@ def match(path: pathlib.Path, apps: list[str], start: float, end: float):
 
 
 if __name__ == "__main__":
-    ops.main(TracingIntegrationTester)
+    ops.main(TracingFake)
